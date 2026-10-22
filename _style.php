@@ -4,12 +4,17 @@
 
 function renderSidebar($activePage = '') {
     $pages = [
-        'dashboard' => ['icon' => 'fa-gauge-high', 'label' => 'Dashboard', 'href' => 'dashboard.php'],
+        'dashboard' => ['icon' => 'fa-solid fa-house', 'label' => 'Dashboard', 'href' => 'dashboard.php'],
         'produk'    => ['icon' => 'fa-box-open', 'label' => 'Data Produk', 'href' => 'produk.php'],
-        'transaksi' => ['icon' => 'fa-receipt', 'label' => 'Transaksi', 'href' => 'transaksi.php'],
+        'transaksi'  => ['icon' => 'fa-receipt',       'label' => 'Transaksi',  'href' => 'transaksi.php'],
+        'penawaran'  => ['icon' => 'fa-file-contract', 'label' => 'Penawaran',  'href' => 'penawaran.php'],
     ];
-    echo '<aside class="sidebar">';
-    echo '<div class="sidebar-brand"><i class="fa-solid fa-video"></i><span>WALUYO TEKNIK<br><small>CCTV System</small></span></div>';
+    echo '<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>';
+    echo '<aside class="sidebar" id="appSidebar">';
+    echo '<div class="sidebar-brand">';
+    echo '<img src="logo_waluyo.png" alt="Waluyo Teknik" class="sidebar-logo">';
+    echo '<button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Tutup Menu" type="button"><i class="fa-solid fa-xmark"></i></button>';
+    echo '</div>';
     echo '<nav class="sidebar-nav">';
     foreach ($pages as $key => $page) {
         $activeClass = ($activePage === $key) ? ' active' : '';
@@ -28,24 +33,24 @@ function getSharedCSS() {
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-        --bg: #0f1117;
-        --bg2: #161b27;
-        --surface: #1e2535;
-        --surface2: #252d3d;
-        --border: rgba(255,255,255,0.07);
+        --bg: #f4f6fb;
+        --bg2: #ffffff;
+        --surface: #ffffff;
+        --surface2: #f1f5f9;
+        --border: rgba(15,23,42,0.08);
         --accent: #3b82f6;
-        --accent2: #60a5fa;
-        --accent-glow: rgba(59,130,246,0.3);
+        --accent2: #2563eb;
+        --accent-glow: rgba(59,130,246,0.25);
         --green: #10b981;
         --yellow: #f59e0b;
         --red: #ef4444;
-        --text: #f1f5f9;
-        --text2: #94a3b8;
-        --text3: #64748b;
+        --text: #1e293b;
+        --text2: #475569;
+        --text3: #94a3b8;
         --sidebar-w: 260px;
         --radius: 12px;
         --radius-lg: 16px;
-        --shadow: 0 4px 24px rgba(0,0,0,0.4);
+        --shadow: 0 4px 24px rgba(15,23,42,0.08);
     }
 
     html, body {
@@ -74,36 +79,64 @@ function getSharedCSS() {
     .sidebar-brand {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 24px 20px;
+        justify-content: center;
+        padding: 20px 16px;
         border-bottom: 1px solid var(--border);
+        position: relative;
     }
 
-    .sidebar-brand i {
-        width: 40px; height: 40px;
-        background: linear-gradient(135deg, var(--accent), #2563eb);
-        border-radius: 10px;
-        display: flex;
+    .sidebar-logo {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .sidebar-close-btn {
+        display: none;
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--text2);
+        cursor: pointer;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 15px;
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,0.45);
+        backdrop-filter: blur(2px);
+        z-index: 99;
+        transition: opacity 0.25s ease;
+    }
+
+    .sidebar-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 15px;
+        transition: background 0.2s, border-color 0.2s;
+        margin-right: 4px;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px var(--accent-glow);
     }
-
-    .sidebar-brand span {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        line-height: 1.4;
-    }
-
-    .sidebar-brand small {
-        font-weight: 400;
-        color: var(--text3);
-        font-size: 10px;
-        letter-spacing: 0.1em;
+    .sidebar-toggle:hover {
+        background: var(--surface2);
+        border-color: var(--accent);
     }
 
     .sidebar-nav {
@@ -131,7 +164,7 @@ function getSharedCSS() {
     .nav-item i { width: 18px; text-align: center; font-size: 15px; }
 
     .nav-item:hover {
-        background: var(--surface);
+        background: var(--surface2);
         color: var(--text);
     }
 
@@ -246,7 +279,7 @@ function getSharedCSS() {
 
     .stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 32px rgba(15,23,42,0.12);
     }
 
     .stat-card::before {
@@ -323,7 +356,7 @@ function getSharedCSS() {
 
     tbody tr:last-child { border-bottom: none; }
 
-    tbody tr:hover { background: rgba(255,255,255,0.03); }
+    tbody tr:hover { background: rgba(15,23,42,0.025); }
 
     tbody td {
         padding: 14px 16px;
@@ -425,8 +458,117 @@ function getSharedCSS() {
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-2 { grid-template-columns: repeat(2, 1fr); }
 
-    @media (max-width: 900px) {
-        .grid-3 { grid-template-columns: 1fr; }
+    /* ── RESPONSIVE / MOBILE CSS ── */
+    @media (max-width: 850px) {
+        :root {
+            --sidebar-w: 260px;
+        }
+
+        .sidebar {
+            transform: translateX(-100%);
+            box-shadow: 0 0 35px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .sidebar-close-btn {
+            display: flex;
+        }
+
+        .sidebar-toggle {
+            display: inline-flex;
+        }
+
+        .main {
+            margin-left: 0 !important;
+            width: 100% !important;
+            min-width: 0 !important;
+        }
+
+        .topbar {
+            padding: 0 16px;
+            height: 56px;
+        }
+
+        .topbar-breadcrumb {
+            font-size: 12px;
+            gap: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .content {
+            padding: 16px 14px !important;
+        }
+
+        .page-title {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 12px;
+            margin-bottom: 18px;
+        }
+
+        .card-header {
+            padding: 14px 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 16px 14px;
+        }
+
+        .grid-3, .grid-2 {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            display: block;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+
+        .table-wrap table {
+            min-width: 540px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            font-size: 12.5px;
+        }
+
+        .form-control {
+            font-size: 14px;
+        }
+
+        .row {
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .col-4 {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .flex-between {
+            flex-wrap: wrap;
+            gap: 12px;
+        }
     }
 
     /* ── UTILITIES ── */
@@ -445,6 +587,41 @@ function getSharedCSS() {
 function getClockScript() {
     return '
     <script>
+    function toggleSidebar() {
+        const sb = document.getElementById("appSidebar") || document.querySelector(".sidebar");
+        const ov = document.getElementById("sidebarOverlay");
+        if(sb) sb.classList.toggle("active");
+        if(ov) ov.classList.toggle("active");
+    }
+
+    // Auto-insert hamburger menu button into topbar if not present
+    document.addEventListener("DOMContentLoaded", function() {
+        const topbar = document.querySelector(".topbar");
+        const breadcrumb = document.querySelector(".topbar-breadcrumb");
+        if(topbar && !document.querySelector(".sidebar-toggle")) {
+            const btn = document.createElement("button");
+            btn.className = "sidebar-toggle";
+            btn.setAttribute("type", "button");
+            btn.setAttribute("aria-label", "Buka Menu");
+            btn.innerHTML = \'<i class="fa-solid fa-bars"></i>\';
+            btn.onclick = toggleSidebar;
+            if(breadcrumb) {
+                breadcrumb.parentNode.insertBefore(btn, breadcrumb);
+            } else {
+                topbar.insertBefore(btn, topbar.firstChild);
+            }
+        }
+        
+        // Auto-close sidebar on mobile when nav item clicked
+        document.querySelectorAll(".sidebar-nav .nav-item").forEach(function(item) {
+            item.addEventListener("click", function() {
+                if(window.innerWidth <= 850) {
+                    toggleSidebar();
+                }
+            });
+        });
+    });
+
     function updateClock() {
         const now = new Date();
         const t = now.toLocaleTimeString("id-ID", {hour:"2-digit",minute:"2-digit",second:"2-digit"});

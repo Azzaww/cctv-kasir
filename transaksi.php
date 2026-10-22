@@ -116,6 +116,22 @@ $list_trx = mysqli_query($conn,"SELECT * FROM transaksi ORDER BY id DESC");
 
 .list-trx-table { font-size: 13px; }
 .list-trx-table .badge-blue { cursor: default; }
+
+@media(max-width: 560px) {
+    .trx-row {
+        grid-template-columns: 1fr 1fr auto !important;
+        gap: 8px !important;
+    }
+    .trx-row select {
+        grid-column: 1 / -1 !important;
+    }
+    .total-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        padding: 14px 16px !important;
+    }
+}
 </style>
 </head>
 <body>
@@ -125,7 +141,7 @@ $list_trx = mysqli_query($conn,"SELECT * FROM transaksi ORDER BY id DESC");
 <div class="main">
     <div class="topbar">
         <div class="topbar-breadcrumb">
-            <i class="fa-solid fa-house" style="color:var(--text3);font-size:12px;"></i>
+            <i class="fa-solid fa-receipt" style="color:var(--text3);font-size:12px;"></i>
             <span style="color:var(--text3);">/</span>
             <span class="current">Transaksi</span>
         </div>

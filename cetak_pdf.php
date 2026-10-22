@@ -12,7 +12,7 @@ include 'koneksi.php';
 
 $id = (int)$_GET['id'];
 
-$trx = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM transaksi WHERE id='$id'"));
+$invoice = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM transaksi WHERE id='$id'"));
 $detail = mysqli_query($conn,"
 SELECT d.*, p.nama_produk, p.satuan
 FROM detail_transaksi d
@@ -20,19 +20,23 @@ JOIN produk p ON d.produk_id = p.id
 WHERE d.transaksi_id='$id'
 ");
 
-$kode        = htmlspecialchars($trx['kode_transaksi'] ?? 'TRX-'.$id);
-$pelanggan   = htmlspecialchars($trx['pelanggan'] ?? 'Umum');
-$tanggal_raw = isset($trx['tanggal']) ? $trx['tanggal'] : date('Y-m-d');
+$kode        = htmlspecialchars($invoice['kode_transaksi'] ?? 'INVOICE-'.$id);
+$pelanggan   = htmlspecialchars($invoice['pelanggan'] ?? 'Umum');
+$tanggal_raw = isset($invoice['tanggal']) ? $invoice['tanggal'] : date('Y-m-d');
 $tanggal     = date('d/m/Y', strtotime($tanggal_raw));
-$total_raw   = $trx['total'] ?? 0;
+$total_raw   = $invoice['total'] ?? 0;
 $total       = number_format($total_raw, 0, ',', '.');
-$diskon_raw  = $trx['diskon'] ?? 0;
+$diskon_raw  = $invoice['diskon'] ?? 0;
 $diskon      = number_format($diskon_raw, 0, ',', '.');
 $subtotal    = number_format($total_raw + $diskon_raw, 0, ',', '.');
-$termin_raw  = $trx['termin'] ?? 0;
+$termin_raw  = $invoice['termin'] ?? 0;
 $termin_str  = ($termin_raw > 0) ? $termin_raw . ' Hari' : '-';
-$jt_raw      = $trx['jatuh_tempo'] ?? '';
+$jt_raw      = $invoice['jatuh_tempo'] ?? '';
 $jatuh_tempo_str = !empty($jt_raw) ? date('d/m/Y', strtotime($jt_raw)) : '-';
+
+// Nama pelanggan untuk bagian "Kepada" — CSS yang mengatur wrapping-nya
+// (memenuhi lebar kotak dulu, baru pindah baris kalau mentok)
+$kepada_html = htmlspecialchars($invoice['pelanggan'] ?? 'Umum');
 
 // Build logo base64 dari file yang ada di folder yang sama
 $logo_path = __DIR__ . '/logo.png';
@@ -69,9 +73,9 @@ $html = "
 <head>
 <meta charset='UTF-8'>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Times New Roman', Times, serif; }
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
     font-size: 11px;
     color: #1a1a1a;
     background: white;
@@ -83,6 +87,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 0;
+    table-layout: fixed;
 }
 .header-table td { vertical-align: middle; padding: 0; }
 .logo-cell { width: 300px; }
@@ -106,7 +111,19 @@ body {
 /* ===== KEPADA ===== */
 .kepada-section { margin-bottom: 10px; }
 .kepada-label { font-size: 12px; font-weight: 700; color: #1a1a1a; margin-right: 250px;}
-.kepada-value { font-size: 14px; font-weight: 900; font-style: bold; color: #1a1a1a; margin-top: 2px; text-transform: uppercase; margin-right: 200px;}
+.kepada-value {
+    font-size: 14px;
+    font-weight: 900;
+    color: #1a1a1a;
+    margin-top: 2px;
+    text-transform: uppercase;
+    margin-right: 200px;
+    line-height: 1.35;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-height: 40px;
+    overflow: hidden;
+}
 
 /* ===== META TABLE ===== */
 .meta-table {
@@ -206,7 +223,7 @@ table.items tfoot td {
       <div class='invoice-title'>Invoice Penjualan</div>
       <br>
       <div class='kepada-label'>Kepada : </div>
-      <div class='kepada-value'>{$pelanggan}</div>
+      <div class='kepada-value'>{$kepada_html}</div>
     </td>
   </tr>
 </table>
@@ -313,5 +330,5 @@ $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
-$dompdf->stream("invoice-{$kode}.pdf");
+$dompdf->stream("invoice-{$pelanggan}.pdf");
 ?>

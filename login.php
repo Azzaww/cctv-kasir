@@ -28,16 +28,16 @@ if(mysqli_num_rows($query)>0){
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --bg: #0f1117;
-    --bg2: #161b27;
-    --surface: #1e2535;
-    --border: rgba(255,255,255,0.07);
+    --bg: #f4f6fb;
+    --bg2: #ffffff;
+    --surface: #f8fafc;
+    --border: rgba(15,23,42,0.08);
     --accent: #3b82f6;
-    --accent2: #60a5fa;
-    --accent-glow: rgba(59,130,246,0.25);
-    --text: #f1f5f9;
-    --text2: #94a3b8;
-    --text3: #64748b;
+    --accent2: #2563eb;
+    --accent-glow: rgba(59,130,246,0.2);
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
     --red: #ef4444;
 }
 
@@ -109,16 +109,10 @@ body::after {
 }
 
 .logo-icon {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border-radius: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    color: white;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 24px var(--accent-glow);
+    width: 100%;
+    max-width: 260px;
+    margin: 0 auto 16px;
+    display: block;
 }
 
 .login-header h2 {
@@ -236,9 +230,7 @@ body::after {
     <div class="login-card">
 
         <div class="login-header">
-            <div class="logo-icon"><i class="fa-solid fa-video"></i></div>
-            <h2>WALUYO TEKNIK CCTV</h2>
-            <p>Silakan masuk ke akun Anda</p>
+            <img src="logo_waluyo.png" alt="Waluyo Teknik" class="logo-icon">
         </div>
 
         <div class="login-body">
@@ -271,7 +263,7 @@ body::after {
             </form>
         </div>
 
-        <div class="login-footer">© 2024 Waluyo Teknik CCTV • Sistem Kasir</div>
+        <div class="login-footer">© 2026 Waluyo Teknik CCTV</div>
     </div>
 </div>
 

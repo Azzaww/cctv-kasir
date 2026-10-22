@@ -87,6 +87,13 @@ $data = mysqli_query($conn,"SELECT * FROM produk ORDER BY id ASC");
 .modal-body { padding: 28px; }
 .modal-footer { padding: 0 28px 28px; display: flex; gap: 10px; justify-content: flex-end; }
 
+@media(max-width: 500px) {
+    .modal-body { padding: 16px; }
+    .modal-header { padding: 16px; }
+    .modal-footer { padding: 0 16px 16px; flex-direction: column-reverse; }
+    .modal-footer .btn { width: 100%; justify-content: center; }
+}
+
 .alert-success {
     background: rgba(16,185,129,0.1);
     border: 1px solid rgba(16,185,129,0.2);
@@ -108,7 +115,7 @@ $data = mysqli_query($conn,"SELECT * FROM produk ORDER BY id ASC");
 <div class="main">
     <div class="topbar">
         <div class="topbar-breadcrumb">
-            <i class="fa-solid fa-house" style="color:var(--text3);font-size:12px;"></i>
+            <i class="fa-solid fa-box-open" style="color:var(--text3);font-size:12px;"></i>
             <span style="color:var(--text3);">/</span>
             <span class="current">Data Produk</span>
         </div>
@@ -154,11 +161,22 @@ $data = mysqli_query($conn,"SELECT * FROM produk ORDER BY id ASC");
                     <?php else: $no=1; while($d=mysqli_fetch_assoc($data)): ?>
                         <tr>
                             <td style="color:var(--text3);width:50px;"><?= $no++ ?></td>
-                            <td style="font-weight:500;"><?= htmlspecialchars($d['nama_produk']) ?></td>
+                            <td style="font-weight:500;">
+                                <div><?= htmlspecialchars($d['nama_produk']) ?></div>
+                                <?php if(!empty($d['deskripsi'])): ?>
+                                <div style="font-size:11.5px;color:var(--text3);margin-top:3px;font-weight:400;line-height:1.4;"><?= nl2br(htmlspecialchars($d['deskripsi'])) ?></div>
+                                <?php endif; ?>
+                            </td>
                             <td class="price-cell">Rp <?= number_format($d['harga'],0,',','.') ?></td>
                             <td><span class="satuan-badge"><?= htmlspecialchars($d['satuan']) ?></span></td>
                             <td>
-                                <button class="btn btn-warning btn-sm" onclick="editProduk(<?= $d['id'] ?>, '<?= addslashes($d['nama_produk']) ?>', <?= $d['harga'] ?>, '<?= $d['satuan'] ?>')">
+                                <button class="btn btn-warning btn-sm"
+                                        data-id="<?= $d['id'] ?>"
+                                        data-nama="<?= htmlspecialchars($d['nama_produk'], ENT_QUOTES) ?>"
+                                        data-harga="<?= $d['harga'] ?>"
+                                        data-satuan="<?= htmlspecialchars($d['satuan'], ENT_QUOTES) ?>"
+                                        data-deskripsi="<?= htmlspecialchars($d['deskripsi'] ?? '', ENT_QUOTES) ?>"
+                                        onclick="editProduk(this)">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                                 <a href="produk.php?hapus=<?= $d['id'] ?>" class="btn btn-danger btn-sm"
@@ -204,6 +222,10 @@ $data = mysqli_query($conn,"SELECT * FROM produk ORDER BY id ASC");
                     <option value="PCS">PCS</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label class="form-label">Deskripsi Produk <span style="color:var(--text3);font-size:11px;font-weight:400;">(Opsional)</span></label>
+                <textarea name="deskripsi" class="form-control" rows="3" placeholder="Deskripsi spesifikasi / keterangan produk..."></textarea>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-ghost" onclick="document.getElementById('modalTambah').classList.remove('show')">Batal</button>
@@ -243,6 +265,10 @@ $data = mysqli_query($conn,"SELECT * FROM produk ORDER BY id ASC");
                     <option value="PCS">PCS</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label class="form-label">Deskripsi Produk <span style="color:var(--text3);font-size:11px;font-weight:400;">(Opsional)</span></label>
+                <textarea name="deskripsi" id="edit_deskripsi" class="form-control" rows="3" placeholder="Deskripsi spesifikasi / keterangan produk..."></textarea>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-ghost" onclick="document.getElementById('modalEdit').classList.remove('show')">Batal</button>
@@ -253,11 +279,12 @@ $data = mysqli_query($conn,"SELECT * FROM produk ORDER BY id ASC");
 </div>
 
 <script>
-function editProduk(id, nama, harga, satuan) {
-    document.getElementById('edit_id').value = id;
-    document.getElementById('edit_nama').value = nama;
-    document.getElementById('edit_harga').value = harga;
-    document.getElementById('edit_satuan').value = satuan;
+function editProduk(btn) {
+    document.getElementById('edit_id').value = btn.getAttribute('data-id');
+    document.getElementById('edit_nama').value = btn.getAttribute('data-nama');
+    document.getElementById('edit_harga').value = btn.getAttribute('data-harga');
+    document.getElementById('edit_satuan').value = btn.getAttribute('data-satuan');
+    document.getElementById('edit_deskripsi').value = btn.getAttribute('data-deskripsi') || '';
     document.getElementById('modalEdit').classList.add('show');
 }
 

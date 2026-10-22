@@ -79,6 +79,24 @@ WHERE d.transaksi_id='$id'
     display: flex;
     gap: 12px;
     margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+@media(max-width:700px){
+    .total-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 14px 16px;
+    }
+    .action-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .action-bar .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 </style>
 </head>
@@ -89,7 +107,7 @@ WHERE d.transaksi_id='$id'
 <div class="main">
     <div class="topbar">
         <div class="topbar-breadcrumb">
-            <i class="fa-solid fa-house" style="color:var(--text3);font-size:12px;"></i>
+            <i class="fa-solid fa-receipt" style="color:var(--text3);font-size:12px;"></i>
             <span style="color:var(--text3);">/</span>
             <a href="transaksi.php" style="color:var(--text3);text-decoration:none;">Transaksi</a>
             <span style="color:var(--text3);">/</span>
@@ -101,7 +119,7 @@ WHERE d.transaksi_id='$id'
         <div class="flex-between mb-4">
             <div>
                 <div class="page-title">Detail Transaksi</div>
-                <div class="page-subtitle"><?= htmlspecialchars($trx['kode_transaksi'] ?? 'TRX-'.$id) ?></div>
+                <div class="page-subtitle"><?= htmlspecialchars($trx['kode_transaksi'] ?? 'INVOICE-'.$id) ?></div>
             </div>
             <span class="badge badge-blue" style="font-size:13px;padding:6px 14px;">
                 <i class="fa-solid fa-circle-check"></i> Selesai
@@ -111,7 +129,7 @@ WHERE d.transaksi_id='$id'
         <div class="info-grid">
             <div class="info-item">
                 <label>ID Transaksi</label>
-                <span class="money"><?= htmlspecialchars($trx['kode_transaksi'] ?? 'TRX-'.$id) ?></span>
+                <span class="money"><?= htmlspecialchars($trx['kode_transaksi'] ?? 'INVOICE-'.$id) ?></span>
             </div>
             <div class="info-item">
                 <label>Tanggal</label>
